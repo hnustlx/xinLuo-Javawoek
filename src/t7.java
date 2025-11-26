@@ -1,20 +1,20 @@
 public class t7 {
     public static void main(String[] args){
-        BankAccount2 account = new BankAccount2(100);
+        BankAccount1 account = new BankAccount1(100);
         account.deposit(2400);
         account.checkBanlace();
         account.deposit(500);
         account.checkBanlace();
     }
 }
-class BankAccount2 {
+class BankAccount1 {
     private double banlance;
-    BankAccount2(){
+    BankAccount1(){
         banlance = 0.0;
     }
-    BankAccount2(double banlance){
-        if(banlance>=0){
-            this.banlance = banlance;
+    BankAccount1(double balance){
+        if(balance>=0){
+            this.banlance = balance;
         }else{
             System.out.println("输入余额不能为负数");
         }
