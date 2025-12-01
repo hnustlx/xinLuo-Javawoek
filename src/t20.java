@@ -7,7 +7,6 @@ public class t20 {
         writer.write("This is the second line with some words\n");
         writer.write("Java programming is interesting");
         writer.close();
-
         BufferedReader reader = new BufferedReader(new FileReader("input.txt"));
         String line;
         int wordCount = 0;

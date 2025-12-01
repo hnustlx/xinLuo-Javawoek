@@ -1,6 +1,8 @@
 import java.util.*;
 import java.io.*;
-class Book {
+
+class Book implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String isbn;
     private String title;
     private String author;
@@ -19,15 +21,10 @@ class Book {
     public String toString() {
         return "ISBN:" + isbn + " 书名:" + title + " 作者:" + author + " 库存:" + stock;
     }
-    public String toFileString() {
-        return isbn + "," + title + "," + author + "," + stock;
-    }
-    public static Book fromFileString(String line) {
-        String[] parts = line.split(",");
-        return new Book(parts[0], parts[1], parts[2], Integer.parseInt(parts[3]));
-    }
 }
-class Library {
+
+class Library implements Serializable {
+    private static final long serialVersionUID = 1L;
     private ArrayList<Book> books = new ArrayList<>();
     public void addBook(Book book) {
         books.add(book);
@@ -68,23 +65,21 @@ class Library {
         Collections.sort(books, Comparator.comparing(Book::getIsbn));
     }
     public void saveToFile(String filename) throws IOException {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
-            for (Book book : books) {
-                writer.println(book.toFileString());
-            }
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
+            out.writeObject(books);
         }
     }
+    @SuppressWarnings("unchecked")
     public void loadFromFile(String filename) throws IOException {
-        books.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                books.add(Book.fromFileString(line));
-            }
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
+            books = (ArrayList<Book>) in.readObject();
+            sortBooks();
+        } catch (ClassNotFoundException e) {
+            throw new IOException("反序列化失败: " + e.getMessage());
         }
-        sortBooks();
     }
 }
+
 public class t31 {
     public static void main(String[] args) {
         Library library = new Library();
@@ -128,7 +123,7 @@ public class t31 {
                     break;
                 case 5:
                     try {
-                        library.saveToFile("books.txt");
+                        library.saveToFile("books.dat");
                         System.out.println("保存成功");
                     } catch (IOException e) {
                         System.out.println("保存失败");
@@ -136,7 +131,7 @@ public class t31 {
                     break;
                 case 6:
                     try {
-                        library.loadFromFile("books.txt");
+                        library.loadFromFile("books.dat");
                         System.out.println("加载成功");
                     } catch (IOException e) {
                         System.out.println("加载失败");

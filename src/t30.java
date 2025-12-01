@@ -19,7 +19,7 @@ abstract class Employee {
         return Objects.equals(id, employee.id);
     }
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hashCode(id);
     }
 }
 class FullTimeEmployee extends Employee {
